@@ -1,0 +1,50 @@
+# VULNERABILITY: Credentials in application.yml committed to repo
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # VULNERABILITY: Hardcoded database credentials
+    url: jdbc:mysql://contoso-mobile-db.mysql.database.azure.com:3306/contoso_mobile?useSSL=false&allowPublicKeyRetrieval=true
+    username: mobile_admin
+    password: M0b!l3Db@2024Pr0d
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  redis:
+    host: contoso-mobile-redis.redis.cache.windows.net
+    port: 6380
+    password: M0b!l3R3d!s2024
+    ssl:
+      enabled: true
+
+# VULNERABILITY: Hardcoded JWT secret
+jwt:
+  secret: contoso-mobile-jwt-secret-key-production-2024-never-share
+  expiration: 31536000000  # 1 year in ms - VULNERABILITY: too long
+
+# VULNERABILITY: Firebase credentials
+firebase:
+  server-key: AAAAfAkEfIrEbAsEkEy:APA91bHfakeFirebaseServerKey1234567890abcdef
+  project-id: contoso-mobile-prod
+
+# VULNERABILITY: Azure Notification Hub credentials
+azure:
+  notification-hub:
+    connection-string: Endpoint=sb://contoso-mobile-hub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=fAkEnOtIfIcAtIoNhUbKeY123456==
+    hub-name: contoso-mobile-notifications
+  storage:
+    connection-string: DefaultEndpointsProtocol=https;AccountName=contosomobileblobs;AccountKey=fAkEmObIlEsToRaGeKeY1234567890ABCDEF==;EndpointSuffix=core.windows.net
+
+# VULNERABILITY: Debug/verbose logging in production
+logging:
+  level:
+    root: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
